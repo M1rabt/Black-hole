@@ -4,59 +4,489 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#05040a">
-<meta name="description" content="An interactive visual black hole simulator by mrabt.">
+<meta name="description" content="An interactive visual black hole illustration with beginner-friendly guides to black holes.">
 <title>Black Hole Simulator — mrabt</title>
 <style>
 :root{color-scheme:dark;--ink:#f7f3ff;--muted:#a9a3bb;--line:#ffffff1c;--panel:#100d1bdc;--cyan:#9cecff;--gold:#ffb75e;--violet:#ae8cff}
 *{box-sizing:border-box}html,body{height:100%;margin:0}body{overflow:hidden;background:#05040a;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input{font:inherit}#universe{position:fixed;inset:0;width:100%;height:100%;display:block}.vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,transparent 20%,#05040a1c 56%,#05040acc 100%)}.grain{position:fixed;inset:0;opacity:.13;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");mix-blend-mode:screen}.topbar{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:25px 32px;z-index:2}.brand{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:750;letter-spacing:.18em;text-transform:uppercase}.brand-mark{width:30px;height:30px;border-radius:50%;border:1px solid #9cecff70;display:grid;place-items:center;box-shadow:0 0 22px #6ecfff36}.brand-mark:after{content:"";width:12px;height:12px;border-radius:50%;background:#030307;box-shadow:0 0 0 2px #df9dff,0 0 14px #ffad55}.status{display:flex;align-items:center;gap:9px;color:#c9c2d8;font:10px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase}.dot{width:6px;height:6px;border-radius:50%;background:#9cecff;box-shadow:0 0 10px #9cecff;animation:pulse 2s infinite}@keyframes pulse{50%{opacity:.35;box-shadow:0 0 2px #9cecff}}.title{position:fixed;left:6vw;top:27%;z-index:1;pointer-events:none}.kicker{font:10px ui-monospace,monospace;color:var(--cyan);letter-spacing:.25em;text-transform:uppercase}.title h1{font-size:clamp(35px,5.6vw,78px);letter-spacing:-.07em;line-height:.92;margin:15px 0 14px;font-weight:570}.title h1 span{display:block;color:#b8aecb;font-weight:350}.title p{margin:0;color:#a9a3bb;font-size:13px;letter-spacing:.02em}.readout{position:fixed;right:36px;top:34%;z-index:1;width:155px;text-align:right;pointer-events:none}.readout .label{font:9px ui-monospace,monospace;color:#a9a3bb;letter-spacing:.18em}.readout strong{display:block;font-size:25px;font-weight:450;letter-spacing:-.04em;margin:4px 0}.readout small{color:#8d879e;font-size:10px}.panel{position:fixed;z-index:3;left:50%;bottom:24px;transform:translateX(-50%);width:min(780px,calc(100% - 32px));padding:17px 20px 15px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(135deg,#171323ed,#0b0a12eb);box-shadow:0 18px 70px #0009,inset 0 1px #ffffff0c;backdrop-filter:blur(22px)}.panel-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.panel-title{font:10px ui-monospace,monospace;letter-spacing:.18em;color:#d5cce5;text-transform:uppercase}.controls{display:grid;grid-template-columns:1fr 1fr auto;gap:22px;align-items:center}.slider label{display:flex;justify-content:space-between;gap:8px;color:#aaa3b8;font-size:10px;margin-bottom:7px}.slider output{color:#f5efff;font:11px ui-monospace,monospace}input[type=range]{appearance:none;width:100%;height:2px;border-radius:3px;background:linear-gradient(90deg,#be8fff,#ffb75e);outline:none;display:block}input[type=range]::-webkit-slider-thumb{appearance:none;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #c69cff;box-shadow:0 0 12px #bf8cffaa;cursor:pointer}input[type=range]::-moz-range-thumb{width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid #c69cff;box-shadow:0 0 12px #bf8cffaa;cursor:pointer}.buttons{display:flex;gap:8px}.icon-btn{border:1px solid var(--line);width:38px;height:36px;border-radius:10px;background:#ffffff08;color:#eee7f8;cursor:pointer;display:grid;place-items:center;transition:.2s}.icon-btn:hover{border-color:#bda0e9;background:#ffffff14;transform:translateY(-1px)}.icon-btn svg{width:15px;height:15px;fill:currentColor}.hint{display:flex;justify-content:space-between;color:#777186;font:9px ui-monospace,monospace;letter-spacing:.07em;margin-top:13px}.creator{color:#c4bbd2}.creator b{color:#f6efff;font-weight:600;letter-spacing:.1em}.mobile-title{display:none}
 @media(max-width:650px){.topbar{padding:18px}.status{font-size:8px}.title{left:22px;top:17%;}.title h1{font-size:44px}.title p{font-size:11px}.readout{right:22px;top:auto;bottom:190px;width:auto}.readout strong{font-size:19px}.readout .label{font-size:8px}.panel{bottom:12px;padding:15px 14px 12px;border-radius:15px}.controls{grid-template-columns:1fr 1fr;gap:14px 18px}.buttons{grid-column:1/-1;justify-content:flex-end}.icon-btn{width:40px}.hint{font-size:8px}.hint span:first-child{max-width:55%}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+:root{--ink:#f5f2ff;--muted:#aaa6b9;--line:#d9d2f02a;--panel:#100e19e8;--cyan:#a9eaff;--gold:#ffc07b;--violet:#bf9aff}
+body{min-height:100svh;background:radial-gradient(ellipse at 52% 42%,#151021 0,#08070e 48%,#040409 100%)}
+#universe{z-index:0}
+.vignette,.grain{z-index:0}
+.vignette{background:radial-gradient(ellipse at 54% 45%,transparent 18%,#05040a24 58%,#05040ae8 100%)}
+.grain{opacity:.09}
+.topbar{padding:clamp(16px,2.3vw,30px) clamp(20px,3.2vw,48px);border-bottom:1px solid #ffffff0d;background:linear-gradient(180deg,#07060bb8,transparent)}
+.brand{gap:13px;font-size:11px;letter-spacing:.2em}
+.brand-mark{width:34px;height:34px}
+.status{gap:10px;font-size:9px;letter-spacing:.19em}
+.title{left:clamp(24px,6vw,96px);top:29%;max-width:min(48vw,680px)}
+.kicker{display:flex;align-items:center;gap:12px;font-size:9px;letter-spacing:.24em}
+.kicker:before{content:"";width:27px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+.title h1{font-size:clamp(48px,7.1vw,104px);letter-spacing:-.075em;line-height:.88;margin:22px 0 20px;font-weight:520;text-shadow:0 8px 42px #0009}
+.title h1 span{color:#c5bfd3;font-weight:340}
+.title p{color:#c0bacb;font-size:14px;letter-spacing:.04em}
+.explore-button{display:inline-flex;align-items:center;gap:11px;margin-top:22px;padding:12px 16px;border:1px solid #b49aff66;border-radius:12px;background:linear-gradient(120deg,#9d7bff24,#53baff14);color:#f6f0ff;font-size:11px;font-weight:650;letter-spacing:.04em;box-shadow:0 8px 30px #7f5bff14;cursor:pointer;pointer-events:auto;transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
+.explore-button:hover{border-color:#c7aaff;background:linear-gradient(120deg,#a37cff42,#53baff26);box-shadow:0 0 28px #8a68ff36,0 0 40px #53baff18;transform:translateY(-2px)}
+.explore-button:focus-visible,.explorer button:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+.explore-button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.readout{top:37%;right:clamp(24px,5vw,78px);width:188px;padding:17px 19px;text-align:left;border:1px solid var(--line);border-radius:14px;background:linear-gradient(140deg,#171322b8,#0b0912c9);box-shadow:0 18px 50px #0005,inset 0 1px #ffffff0d;backdrop-filter:blur(16px)}
+.readout .label{font-size:8px;letter-spacing:.2em}
+.readout strong{font-size:29px;margin:8px 0 3px;font-weight:480}
+.readout small{color:#aaa4b5;font-size:10px;letter-spacing:.06em}
+.panel{width:min(900px,calc(100% - 40px));padding:20px 24px 17px;border:1px solid #d9d2f035;border-radius:20px;background:linear-gradient(135deg,#171421f2,#0c0b13ed);box-shadow:0 24px 90px #000a,inset 0 1px #ffffff12;backdrop-filter:blur(26px)}
+.panel-top{margin-bottom:17px}
+.panel-title{font-size:9px;letter-spacing:.2em;color:#e0d9ea}
+.controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:clamp(18px,3vw,34px);align-items:end}
+.slider label{font-size:11px;color:#bdb7c8;margin-bottom:6px}
+.slider output{font-size:11px;font-variant-numeric:tabular-nums}
+input[type=range]{height:22px;margin:0;background:linear-gradient(90deg,#bf9aff,#ffc07b) center/100% 3px no-repeat;cursor:pointer;touch-action:pan-y}
+input[type=range]::-webkit-slider-thumb{width:14px;height:14px;border:2px solid #eee3ff;background:#ae8cff;box-shadow:0 0 0 4px #ae8cff22,0 0 18px #bf9affaa}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border:2px solid #eee3ff;background:#ae8cff;box-shadow:0 0 0 4px #ae8cff22,0 0 18px #bf9affaa}
+input[type=range]:focus-visible,.icon-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+.buttons{gap:9px}
+.icon-btn{width:42px;height:40px;border-radius:12px;background:#ffffff09;transition:background .2s,border-color .2s,transform .2s}
+.icon-btn[hidden]{display:none}
+.icon-btn:hover{border-color:#cbb5ee;background:#ffffff16;transform:translateY(-2px)}
+.icon-btn svg{width:16px;height:16px}
+.hint{margin-top:15px;color:#9690a2;font-size:9px;letter-spacing:.08em}
+.creator{color:#b5adbf}
+.creator b{color:#f4effb}
+@media(max-width:650px){
+ .topbar{padding:15px 18px}
+ .brand{gap:10px;font-size:9px;letter-spacing:.16em}
+ .brand-mark{width:29px;height:29px}
+ .status{gap:7px;font-size:7px;letter-spacing:.12em}
+ .title{left:22px;top:17%;max-width:78vw}
+ .kicker{font-size:8px}
+ .title h1{font-size:clamp(39px,11vw,52px);line-height:.9;margin:16px 0 13px}
+ .title p{font-size:11px}
+ .readout{top:auto;right:20px;bottom:190px;width:auto;min-width:133px;padding:11px 13px;border-radius:12px}
+ .readout .label{font-size:7px}
+ .readout strong{font-size:21px;margin:5px 0 1px}
+ .readout small{font-size:9px}
+ .panel{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100% - 24px);padding:14px 14px 12px;border-radius:17px}
+ .panel-top{margin-bottom:12px}
+ .panel-title{font-size:8px}
+ .controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px 16px}
+ .slider label{font-size:9px;gap:4px}
+ .slider output{font-size:9px}
+ .buttons{grid-column:1/-1;justify-content:flex-end;gap:8px}
+ .icon-btn{width:40px;height:38px}
+ .hint{gap:12px;margin-top:11px;font-size:7px;line-height:1.5;letter-spacing:.04em}
+ .hint span:first-child{max-width:56%}
+ .creator{white-space:nowrap}
+}
+@media(max-width:360px){
+ .status{font-size:6px}
+ .title{left:18px}
+ .readout{right:16px}
+ .panel{width:calc(100% - 18px);padding-right:11px;padding-left:11px}
+ .hint{font-size:6.5px}
+}
+@media(max-height:560px) and (min-width:651px){
+ .title{top:24%}
+ .title h1{font-size:clamp(44px,6vw,76px);margin:14px 0}
+ .readout{top:30%}
+ .panel{bottom:10px;padding:13px 20px 11px}
+ .panel-top{margin-bottom:10px}
+ .hint{margin-top:9px}
+}
+html,body{height:auto;min-height:100%}
+body{overflow-x:hidden;overflow-y:auto;background:#05040a}
+.stage{position:relative;isolation:isolate;height:100svh;min-height:680px;overflow:hidden;background:radial-gradient(ellipse at 54% 46%,#181021 0,#090710 50%,#05040a 100%)}
+#universe{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+.vignette,.grain{position:absolute;z-index:-1}
+.vignette{background:radial-gradient(ellipse at 54% 45%,transparent 18%,#05040a24 58%,#05040ae8 100%)}
+.grain{opacity:.08}
+.topbar{position:absolute;z-index:2;border-bottom:1px solid #ffffff0d;background:linear-gradient(180deg,#07060bb8,transparent)}
+.title{position:absolute;z-index:1;top:29%;left:clamp(24px,6vw,96px);max-width:min(48vw,680px);pointer-events:none}
+.title h1{font-size:clamp(48px,7.1vw,104px);line-height:.88;font-weight:520;text-shadow:0 8px 42px #0009}
+.title h1 span{color:#c5bfd3;font-weight:340}
+.title p{color:#c0bacb;font-size:14px}
+.readout{position:absolute;z-index:1;top:37%;right:clamp(24px,5vw,78px);width:188px;padding:17px 19px;text-align:left;border:1px solid var(--line);border-radius:14px;background:linear-gradient(140deg,#171322c9,#0b0912dc);box-shadow:0 18px 50px #0005,inset 0 1px #ffffff0d;backdrop-filter:blur(16px)}
+.readout .label{font-size:8px;letter-spacing:.2em;color:#c1bacb}
+.readout strong{font-size:29px;margin:8px 0 3px;font-weight:480}
+.readout small{color:#c0bacb;font-size:10px;letter-spacing:.04em}
+.panel{position:absolute;z-index:3;bottom:28px;width:min(900px,calc(100% - 40px));padding:20px 24px 17px}
+.controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:clamp(18px,3vw,34px);align-items:end}
+.slider label{font-size:11px;color:#d0c9d9;margin-bottom:6px}
+.slider output{font-size:11px;font-variant-numeric:tabular-nums}
+input[type=range]{height:22px;margin:0;background:linear-gradient(90deg,#bf9aff,#ffc07b) center/100% 3px no-repeat;cursor:pointer;touch-action:pan-y}
+input[type=range]::-webkit-slider-thumb{width:14px;height:14px;border:2px solid #eee3ff;background:#ae8cff;box-shadow:0 0 0 4px #ae8cff22,0 0 18px #bf9affaa}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border:2px solid #eee3ff;background:#ae8cff;box-shadow:0 0 0 4px #ae8cff22,0 0 18px #bf9affaa}
+input[type=range]:focus-visible,.icon-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+.icon-btn{width:42px;height:40px;border-radius:12px;background:#ffffff09;transition:background .2s,border-color .2s,transform .2s}
+.icon-btn:hover{border-color:#cbb5ee;background:#ffffff16;transform:translateY(-2px)}
+.icon-btn svg{width:16px;height:16px}
+.buttons{gap:9px}
+.hint{margin-top:15px;color:#b9b2c2;font-size:9px;letter-spacing:.06em}
+.creator{color:#c8c1d0}
+.creator b{color:#f4effb}
+.dot{background:#a9eaff}
+.guide{position:relative;padding:clamp(64px,9vw,116px) clamp(22px,8vw,120px) clamp(72px,10vw,132px);background:linear-gradient(180deg,#090710,#0b0912 60%,#08070d);border-top:1px solid #ffffff12}
+.guide-inner{width:min(1100px,100%);margin:0 auto}
+.guide-heading{max-width:660px;margin-bottom:38px}
+.guide-eyebrow{margin:0 0 14px;color:var(--cyan);font:9px ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase}
+.guide h2{margin:0;color:var(--ink);font-size:clamp(32px,5vw,58px);font-weight:460;letter-spacing:-.06em;line-height:1}
+.guide-intro{max-width:600px;margin:18px 0 0;color:#c2bccb;font-size:15px;line-height:1.7}
+.concepts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.concept{min-height:200px;padding:22px 20px;border:1px solid #ffffff18;border-radius:16px;background:linear-gradient(145deg,#15121ee0,#0d0b14e8);box-shadow:inset 0 1px #ffffff08}
+.concept-index{color:#bfa1f6;font:9px ui-monospace,monospace;letter-spacing:.12em}
+.concept h3{margin:23px 0 10px;color:#f1edf7;font-size:16px;font-weight:550;letter-spacing:-.02em}
+.concept p{margin:0;color:#b8b2c2;font-size:12px;line-height:1.7}
+.model-note{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start;margin-top:20px;padding:17px 19px;border:1px solid #a9eaff26;border-radius:14px;background:#a9eaff08}
+.model-note svg{width:18px;height:18px;margin-top:1px;fill:var(--cyan)}
+.model-note p{margin:0;color:#c7c1d0;font-size:12px;line-height:1.7}
+.model-note strong{color:#f2eef8;font-weight:600}
+.guide-footer{display:flex;justify-content:space-between;gap:16px;margin-top:30px;color:#a7a0b1;font:9px ui-monospace,monospace;letter-spacing:.07em}
+.guide-footer a{color:#d3cae1;text-decoration:none}
+.guide-footer a:hover,.guide-footer a:focus-visible{color:var(--cyan);text-decoration:underline}
+.creator-credit{display:flex;align-items:center;gap:13px;width:max-content;max-width:100%;padding:11px 14px 11px 11px;border:1px solid #ffffff14;border-radius:14px;background:linear-gradient(135deg,#11101bd9,#0b0a13dd);box-shadow:0 8px 28px #0003;transition:border-color .25s ease,box-shadow .25s ease,background .25s ease}
+.creator-credit:hover,.creator-credit:focus-within{border-color:#9e8cff64;background:linear-gradient(135deg,#171329ed,#0d1020ed);box-shadow:0 0 25px #8665ff20,0 0 34px #5595ff14,0 8px 28px #0004}
+.creator-mark{display:block;flex:0 0 39px;width:39px;height:39px;color:#bda2ff;filter:drop-shadow(0 0 7px #876aff66);transition:filter .25s ease,transform .25s ease}
+.creator-credit:hover .creator-mark,.creator-credit:focus-within .creator-mark{filter:drop-shadow(0 0 10px #8d75ffb3) drop-shadow(0 0 8px #5caeff75);transform:rotate(-8deg)}
+.creator-mark .mark-core{fill:#05050b;stroke:#e8dcff;stroke-width:1.2}
+.creator-mark .mark-orbit{fill:none;stroke:currentColor;stroke-width:1.2}
+.creator-mark .mark-orbit-blue{fill:none;stroke:#82cbff;stroke-width:1.1}
+.creator-mark .mark-dot{fill:#d8c6ff}
+.creator-copy{display:grid;gap:4px;color:#bbb5c7;font-size:9px;line-height:1.35;letter-spacing:.035em}
+.creator-copy strong{color:#f2edf9;font-size:11px;font-weight:620;letter-spacing:.035em}
+.creator-copy span:last-child{color:#9892a4}
+.footer-tools{display:grid;gap:10px;justify-items:end;align-content:center;text-align:right}
+.footer-tools .shortcut-list{max-width:100%;color:#b9b2c2;line-height:1.6}
+.shortcut-list{font-variant-numeric:tabular-nums}
+.explorer[hidden]{display:none}
+.explorer{position:fixed;z-index:20;inset:0;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 46%,#111020 0,#070710 48%,#030409 100%);color:#f5f2ff}
+.explorer:before,.explorer:after{position:absolute;z-index:-1;inset:0;content:"";pointer-events:none}
+.explorer:before{background:radial-gradient(ellipse at 50% 53%,transparent 15%,#04040b55 69%,#030409e8 100%)}
+.explorer:after{opacity:.07;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");mix-blend-mode:screen}
+.explorer-top,.explorer-bottom{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:clamp(14px,2vw,26px) clamp(16px,3vw,44px);background:linear-gradient(180deg,#080811df,#08081190);border-bottom:1px solid #ffffff14}
+.explorer-bottom{justify-content:center;border-top:1px solid #ffffff14;border-bottom:0;background:linear-gradient(0deg,#080811ed,#080811aa);padding:13px 18px max(13px,env(safe-area-inset-bottom))}
+.explorer-heading{display:grid;gap:4px;min-width:0}
+.explorer-eyebrow{color:#a9eaff;font:9px ui-monospace,monospace;letter-spacing:.19em;text-transform:uppercase}
+.explorer-title{font-size:clamp(17px,2.2vw,24px);font-weight:550;letter-spacing:-.035em}
+.explorer-actions,.explorer-tools{display:flex;align-items:center;gap:9px}
+.explorer-button{display:inline-flex;min-height:40px;align-items:center;justify-content:center;gap:8px;padding:9px 13px;border:1px solid #ffffff24;border-radius:11px;background:#ffffff09;color:#eee9f7;font-size:11px;font-weight:550;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
+.explorer-button:hover{border-color:#a890ff85;background:#a58bff1a;box-shadow:0 0 20px #795bff24;transform:translateY(-1px)}
+.explorer-button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.explorer-button.primary{border-color:#9d83ef77;background:linear-gradient(120deg,#9474e923,#53baff12)}
+.explorer-icon{width:42px;min-width:42px;padding:9px}
+.explorer-viewport{position:relative;min-height:0;overflow:hidden;touch-action:none;cursor:grab}
+.explorer-viewport.dragging{cursor:grabbing}
+#black-hole-3d{position:absolute;inset:0;width:100%;height:100%;display:block}
+.explorer-labels{position:absolute;inset:0;z-index:1;pointer-events:none}
+.scene-label{position:absolute;display:grid;gap:3px;min-width:125px;padding:9px 12px;border:1px solid #ffffff20;border-radius:10px;background:#090913b8;box-shadow:0 8px 30px #0005;backdrop-filter:blur(10px)}
+.scene-label strong{font-size:10px;font-weight:620;letter-spacing:.03em;color:#f4efff}
+.scene-label span{font:8px ui-monospace,monospace;letter-spacing:.12em;color:#b4aacd;text-transform:uppercase}
+.scene-label:after{position:absolute;top:50%;width:26px;height:1px;content:"";background:linear-gradient(90deg,#ad8bffb8,transparent)}
+.label-horizon{left:clamp(18px,8vw,130px);top:48%}
+.label-horizon:after{left:100%}
+.label-disk{right:clamp(18px,8vw,130px);top:35%}
+.label-disk:after{right:100%;transform:rotate(180deg)}
+.label-singularity{right:clamp(18px,8vw,130px);top:61%}
+.label-singularity:after{right:100%;transform:rotate(180deg)}
+.explorer-hint{position:absolute;z-index:1;left:50%;bottom:18px;transform:translateX(-50%);max-width:calc(100% - 32px);padding:8px 12px;border:1px solid #ffffff1c;border-radius:999px;background:#070710b8;color:#c1bbce;font:9px ui-monospace,monospace;letter-spacing:.025em;text-align:center;white-space:nowrap;backdrop-filter:blur(10px);pointer-events:none}
+.explorer-status{position:absolute;z-index:3;left:50%;top:16px;transform:translateX(-50%);padding:8px 12px;border:1px solid #ffbc7750;border-radius:10px;background:#180f16ed;color:#ffd8a9;font-size:11px;text-align:center}
+.explorer-status[hidden]{display:none}
+.zoom-value{min-width:50px;color:#a9a2b6;font:9px ui-monospace,monospace;text-align:center}
+.explorer-button:disabled{opacity:.38;cursor:not-allowed;transform:none;box-shadow:none}
+.explorer:fullscreen{width:100vw;height:100vh}
+body.explorer-open{overflow:hidden}
+@media(max-width:800px){.concepts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+ .stage{min-height:660px}
+ .topbar{padding:15px 18px}
+ .brand{gap:10px;font-size:9px;letter-spacing:.16em}
+ .brand-mark{width:29px;height:29px}
+ .status{gap:7px;font-size:7px;letter-spacing:.12em}
+ .title{left:22px;top:17%;max-width:78vw}
+ .kicker{font-size:8px}
+ .title h1{font-size:clamp(39px,11vw,52px);line-height:.9;margin:16px 0 13px}
+ .title p{font-size:11px}
+ .readout{top:auto;right:20px;bottom:205px;width:auto;min-width:133px;padding:11px 13px;border-radius:12px}
+ .readout .label{font-size:7px}
+ .readout strong{font-size:21px;margin:5px 0 1px}
+ .readout small{font-size:9px}
+ .panel{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100% - 24px);padding:14px 14px 12px;border-radius:17px}
+ .panel-top{margin-bottom:12px}
+ .panel-title{font-size:8px}
+ .controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px 16px}
+ .slider label{font-size:9px;gap:4px}
+ .slider output{font-size:9px}
+ .buttons{grid-column:1/-1;justify-content:flex-end;gap:8px}
+ .icon-btn{width:40px;height:38px}
+ .hint{gap:12px;margin-top:11px;font-size:7px;line-height:1.5;letter-spacing:.04em}
+ .hint span:first-child{max-width:56%}
+ .creator{white-space:nowrap}
+ .guide{padding:68px 20px 76px}
+ .guide-heading{margin-bottom:28px}
+ .guide-intro{font-size:14px}
+ .concepts{gap:10px}
+ .concept{min-height:0;padding:18px 15px}
+ .concept h3{margin:19px 0 9px;font-size:15px}
+ .concept p{font-size:11px}
+ .model-note{gap:11px;padding:15px}
+ .guide-footer{flex-direction:column;align-items:flex-start;font-size:8px;line-height:1.6}
+ .creator-credit{gap:11px;padding:10px 12px 10px 10px}
+ .creator-mark{flex-basis:35px;width:35px;height:35px}
+ .footer-tools{justify-items:start;text-align:left}
+ .explore-button{margin-top:17px;padding:11px 13px;font-size:10px}
+ .explorer-top{align-items:flex-start;padding:13px 14px}
+ .explorer-actions{gap:6px}
+ .explorer-button{min-height:38px;padding:8px 10px;font-size:10px}
+ .explorer-actions .explorer-button{white-space:nowrap}
+ .explorer-top .explorer-heading{padding-top:4px}
+ .explorer-title{font-size:16px}
+ .explorer-eyebrow{font-size:7px}
+ .scene-label{min-width:0;padding:7px 9px}
+ .scene-label strong{font-size:9px}
+ .scene-label span{font-size:7px}
+ .label-horizon{left:10px;top:40%}
+ .label-disk{right:10px;top:29%}
+ .label-singularity{right:10px;top:58%}
+ .scene-label:after{width:12px}
+ .explorer-bottom{gap:12px;padding:10px 10px max(10px,env(safe-area-inset-bottom))}
+ .explorer-tools{gap:6px}
+ .explorer-icon{width:38px;min-width:38px;height:38px;padding:8px}
+ .zoom-value{min-width:40px;font-size:8px}
+ .explorer-hint{bottom:12px;font-size:7px;white-space:normal;width:max-content}
+}
+@media(max-width:360px){
+ .status{font-size:6px}
+ .title{left:18px}
+ .readout{right:16px}
+ .panel{width:calc(100% - 18px);padding-right:11px;padding-left:11px}
+ .hint{font-size:6.5px}
+ .guide{padding-right:15px;padding-left:15px}
+ .concept{padding:15px 12px}
+ .explorer-actions .explorer-button{font-size:0;gap:0;width:38px;padding:8px}
+ .explorer-actions .explorer-button svg{width:17px;height:17px}
+ .explorer-actions #explorer-back{font-size:9px;gap:5px;width:auto}
+}
+@media(max-height:620px) and (min-width:651px){
+ .stage{min-height:400px}
+ .title{top:24%}
+ .title h1{font-size:clamp(44px,6vw,76px);margin:14px 0}
+ .readout{top:30%}
+ .panel{bottom:12px;padding:13px 20px 11px}
+ .panel-top{margin-bottom:10px}
+ .hint{margin-top:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 </style>
 </head>
 <body>
-<canvas id="universe" aria-label="Animated visualization of a black hole and its glowing accretion disk"></canvas>
-<div class="vignette"></div><div class="grain"></div>
-<header class="topbar"><div class="brand"><span class="brand-mark"></span><span>Singularity / 01</span></div><div class="status"><i class="dot"></i><span id="status">Simulation running</span></div></header>
+<div class="stage" id="stage"><canvas id="universe" role="img" aria-label="Illustrative visualization of a black hole, glowing accretion disk, stars, and gravitational lensing"></canvas>
+<div class="vignette" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
+<header class="topbar"><div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>Singularity / 01</span></div><div class="status" role="status" aria-live="polite"><i class="dot" aria-hidden="true"></i><span id="status">Simulation running</span></div></header>
 <main>
-<section class="title"><div class="kicker">Interactive space study</div><h1>Beyond the<span>event horizon.</span></h1><p>A visual black hole simulator</p></section>
-<aside class="readout"><div class="label">ESTIMATED MASS</div><strong id="mass-readout">8.4 M☉</strong><small>solar masses</small></aside>
+<section class="title"><div class="kicker">Interactive space study</div><h1>Beyond the<span>event horizon.</span></h1><p>A visual black hole simulator</p><button class="explore-button" id="explore-open" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/><path d="M12 1v3M23 12h-3M12 23v-3M1 12h3"/></svg><span>Explore in 3D</span></button></section>
+<aside class="readout" aria-label="Current visual parameters"><div class="label">ILLUSTRATIVE MASS SETTING</div><strong id="mass-readout" aria-live="polite">8.4 M☉</strong><small>solar masses · visual parameter</small></aside>
 <section class="panel" aria-label="Black hole simulation controls"><div class="panel-top"><div class="panel-title">Simulation controls</div></div><div class="controls">
-<div class="slider"><label for="mass"><span>Black hole mass</span><output id="mass-value">8.4 M☉</output></label><input id="mass" type="range" min="2" max="20" value="8.4" step=".1"></div>
-<div class="slider"><label for="spin"><span>Disk rotation</span><output id="spin-value">72%</output></label><input id="spin" type="range" min="10" max="100" value="72" step="1"></div>
+<div class="slider"><label for="mass"><span>Illustrative mass</span><output id="mass-value" aria-live="polite">8.4 M☉</output></label><input id="mass" type="range" min="2" max="20" value="8.4" step=".1" aria-valuetext="8.4 solar masses, visual setting"></div>
+<div class="slider"><label for="spin"><span>Disk rotation setting</span><output id="spin-value" aria-live="polite">72%</output></label><input id="spin" type="range" min="10" max="100" value="72" step="1" aria-valuetext="72 percent, visual setting"></div>
 <div class="buttons">
 <button class="icon-btn" id="pause" type="button" aria-label="Pause simulation" title="Pause simulation"><svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zm7 0h4v14h-4z"/></svg></button>
 <button class="icon-btn" id="reset" type="button" aria-label="Reset simulation" title="Reset simulation"><svg viewBox="0 0 24 24"><path d="M12 5V1L6 7l6 6V9a6 6 0 1 1-5.65 8h-2.1A8 8 0 1 0 12 5"/></svg></button>
-</div></div><div class="hint"><span>Adjust mass and rotation to shape the system</span><span class="creator">CREATED BY <b>mrabt</b></span></div></section>
+<button class="icon-btn" id="fullscreen" type="button" aria-label="Enter fullscreen" title="Enter fullscreen" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v2H6v4H4zm10 0h6v6h-2V6h-4zM4 14h2v4h4v2H4zm14 4v-4h2v6h-6v-2z"/></svg></button>
+</div></div><div class="hint"><span>Adjust settings to explore the visual model</span><span class="creator">CREATED BY <b>mrabt</b></span></div></section>
 </main>
+</div>
+<section class="explorer" id="explorer" role="dialog" aria-modal="true" aria-labelledby="explorer-title" aria-describedby="explorer-help" hidden>
+<header class="explorer-top">
+<div class="explorer-heading"><span class="explorer-eyebrow">Interactive WebGL experience</span><h2 class="explorer-title" id="explorer-title">Black Hole Explorer</h2></div>
+<div class="explorer-actions">
+<button class="explorer-button" id="explorer-back" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M9 12h11"/></svg><span>Back to Simulator</span></button>
+<button class="explorer-button" id="explorer-fullscreen" type="button" aria-label="Enter fullscreen" aria-pressed="false" title="Enter fullscreen" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v2H6v4H4zm10 0h6v6h-2V6h-4zM4 14h2v4h4v2H4zm14 4v-4h2v6h-6v-2z"/></svg></button>
+</div>
+</header>
+<div class="explorer-viewport" id="explorer-viewport" aria-label="Interactive 3D black hole scene. Drag to rotate; use wheel or pinch to zoom.">
+<canvas id="black-hole-3d" role="img" aria-label="Real-time 3D black hole illustration with a glowing accretion disk and gravitational lensing"></canvas>
+<div class="explorer-labels" aria-hidden="true">
+<div class="scene-label label-horizon"><strong>Event Horizon</strong><span>Point of no return</span></div>
+<div class="scene-label label-disk"><strong>Accretion Disk</strong><span>Orbiting hot matter</span></div>
+<div class="scene-label label-singularity"><strong>Singularity</strong><span>Illustrative core</span></div>
+</div>
+<p class="explorer-hint" id="explorer-help">Drag to orbit · Scroll or pinch to zoom · Arrow keys orbit · + / − zoom · R reset · Esc back</p>
+<p class="explorer-status" id="explorer-status" role="status" aria-live="polite" hidden></p>
+</div>
+<footer class="explorer-bottom">
+<div class="explorer-tools">
+<button class="explorer-button explorer-icon" id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M7.5 10.5h6"/></svg></button>
+<span class="zoom-value" id="zoom-value" aria-live="polite">View · 100%</span>
+<button class="explorer-button explorer-icon" id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M7.5 10.5h6m-3-3v6"/></svg></button>
+<button class="explorer-button" id="reset-view" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg><span>Reset View</span></button>
+</div>
+</footer>
+</section>
+<section class="guide" id="guide" aria-labelledby="guide-title">
+<div class="guide-inner">
+<div class="guide-heading"><p class="guide-eyebrow">A short guide to black holes</p><h2 id="guide-title">A boundary, not a surface.</h2><p class="guide-intro">A black hole is a region where gravity is so strong that, past a boundary called the event horizon, nothing can escape—not even light.</p></div>
+<div class="concepts">
+<article class="concept"><span class="concept-index">01 / BOUNDARY</span><h3>Event horizon</h3><p>The event horizon marks the point of no return. It is not a solid shell; it is the boundary around a black hole beyond which every possible path forward leads inward.</p></article>
+<article class="concept"><span class="concept-index">02 / CORE</span><h3>Singularity</h3><p>In classical general relativity, matter collapsing into a black hole leads toward a singularity, where the theory predicts extreme density. What truly happens there remains an open question in physics.</p></article>
+<article class="concept"><span class="concept-index">03 / INFALLING MATTER</span><h3>Accretion disk</h3><p>Gas and dust orbiting toward a black hole can form a hot, bright disk. Friction and compression heat this material, so the disk can glow before matter crosses the event horizon.</p></article>
+<article class="concept"><span class="concept-index">04 / BENT LIGHT</span><h3>Gravitational lensing</h3><p>Gravity curves the paths of light. Near a black hole, this bending can distort and magnify views of bright matter behind it, sometimes making parts of the disk appear wrapped around the darkness.</p></article>
+</div>
+<aside class="model-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m1 15h-2v-6h2zm0-8h-2V7h2z"/></svg><p><strong>About this visualization.</strong> This interactive scene is an artistic illustration, not a numerical relativity or astrophysics model. The mass and rotation controls change visual parameters only; the readouts are settings, not measurements or predictions.</p></aside>
+<footer class="guide-footer" aria-label="Creator credits and simulator shortcuts">
+<div class="creator-credit">
+<svg class="creator-mark" viewBox="0 0 44 44" role="img" aria-label="M1rabt black-hole monogram">
+<ellipse class="mark-orbit" cx="22" cy="22" rx="18" ry="8" transform="rotate(-32 22 22)"/>
+<ellipse class="mark-orbit-blue" cx="22" cy="22" rx="18" ry="8" transform="rotate(32 22 22)"/>
+<circle class="mark-core" cx="22" cy="22" r="6.5"/>
+<circle class="mark-dot" cx="37.5" cy="12.5" r="1.5"/>
+</svg>
+<div class="creator-copy"><strong>Created by M1rabt</strong><span>Designed &amp; Developed by M1rabt</span><span>Built with HTML, CSS &amp; JavaScript</span></div>
+</div>
+<div class="footer-tools"><span class="shortcut-list">KEYS · SPACE pause / resume &nbsp; R reset &nbsp; F fullscreen</span><a href="#stage">Back to the simulator ↑</a></div>
+</footer>
+</div>
+</section>
 <script>
 (()=>{'use strict';
-const canvas=document.getElementById('universe'),ctx=canvas.getContext('2d',{alpha:false});
+const stage=document.getElementById('stage'),canvas=document.getElementById('universe'),ctx=canvas.getContext('2d',{alpha:false});
 const mass=document.getElementById('mass'),spin=document.getElementById('spin');
 const massValue=document.getElementById('mass-value'),massReadout=document.getElementById('mass-readout'),spinValue=document.getElementById('spin-value');
-const pause=document.getElementById('pause'),status=document.getElementById('status');
-let w=0,h=0,dpr=1,time=0,running=true,raf=0,stars=[],particles=[],reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pause=document.getElementById('pause'),reset=document.getElementById('reset'),fullscreen=document.getElementById('fullscreen'),status=document.getElementById('status');
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+const supportsFullscreen=Boolean(document.fullscreenEnabled&&stage.requestFullscreen);
+const explorer=document.getElementById('explorer'),explorerOpenButton=document.getElementById('explore-open'),explorerBack=document.getElementById('explorer-back'),explorerFullscreen=document.getElementById('explorer-fullscreen'),explorerViewport=document.getElementById('explorer-viewport'),explorerCanvas=document.getElementById('black-hole-3d'),explorerStatus=document.getElementById('explorer-status'),zoomValue=document.getElementById('zoom-value');
+const zoomInButton=document.getElementById('zoom-in'),zoomOutButton=document.getElementById('zoom-out'),resetViewButton=document.getElementById('reset-view');
+const supportsExplorerFullscreen=Boolean(document.fullscreenEnabled&&explorer.requestFullscreen);
+const explorerState={open:false,gl:null,program:null,buffer:null,locations:null,raf:0,width:0,height:0,dpr:1,yaw:.42,pitch:.28,distance:7.4,pointers:new Map(),lastPoint:{x:0,y:0},pinchStartDistance:0,pinchStartCamera:7.4};
+let w=0,h=0,dpr=1,time=0,running=!reducedMotion.matches,raf=0,stars=[],particles=[],explorerOpen=false;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a);
-function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.floor(w*h/1900)},()=>({x:Math.random()*w,y:Math.random()*h,r:rand(.25,1.25),a:rand(.18,.8),phase:rand(0,6.28),blue:Math.random()>.72}));particles=Array.from({length:380},()=>({angle:rand(0,6.28),radius:rand(1.35,3.25),size:rand(.35,1.8),speed:rand(.0008,.003),phase:rand(0,6.28),band:Math.random()}));}
+const vertexShaderSource=`attribute vec2 a_position;
+void main(){gl_Position=vec4(a_position,0.0,1.0);}`;
+const fragmentShaderSource=`precision highp float;
+uniform vec2 u_resolution;
+uniform float u_time;
+uniform float u_yaw;
+uniform float u_pitch;
+uniform float u_distance;
+float hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+vec3 sky(vec3 direction){
+ vec2 uv=vec2(atan(direction.z,direction.x)*0.15915494+0.5,asin(clamp(direction.y,-1.0,1.0))*0.31830988+0.5);
+ vec2 cell=floor(uv*vec2(420.0,210.0));
+ vec2 local=fract(uv*vec2(420.0,210.0))-0.5;
+ float seed=hash21(cell);
+ vec2 starPoint=vec2(hash21(cell+17.1),hash21(cell+91.7))-0.5;
+ float d=length(local-starPoint*0.7);
+ float star=(1.0-smoothstep(0.001,0.018,d))*step(0.986,seed);
+ float tint=hash21(cell+3.7);
+ vec3 starColor=mix(vec3(0.57,0.7,1.0),vec3(1.0,0.76,0.54),tint);
+ float nebula=pow(max(0.0,sin(uv.x*19.0+sin(uv.y*13.0))*sin(uv.y*28.0-uv.x*8.0)),5.0)*0.035;
+ vec3 base=vec3(0.012,0.014,0.03)+nebula*vec3(0.28,0.14,0.52);
+ return base+star*starColor*(0.35+2.2*seed);
+}
+void main(){
+ vec2 screen=(gl_FragCoord.xy-0.5*u_resolution)/u_resolution.y;
+ float cp=cos(u_pitch),sp=sin(u_pitch),cy=cos(u_yaw),sy=sin(u_yaw);
+ vec3 ro=vec3(u_distance*cp*sy,u_distance*sp,u_distance*cp*cy);
+ vec3 forward=normalize(-ro);
+ vec3 right=normalize(cross(forward,vec3(0.0,1.0,0.0)));
+ vec3 up=normalize(cross(right,forward));
+ vec3 ray=normalize(forward+right*screen.x*0.78+up*screen.y*0.78);
+ vec3 position=ro;
+ vec3 light=vec3(0.0);
+ float transmittance=1.0;
+ float hit=0.0;
+ float stepSize=0.105;
+ for(int i=0;i<72;i++){
+  float radius=length(position);
+  if(radius<0.69){hit=1.0;break;}
+  if(radius>15.0)break;
+  float cylindrical=length(position.xz);
+  float radialMask=smoothstep(0.74,0.88,cylindrical)*(1.0-smoothstep(2.35,3.05,cylindrical));
+  float sheet=exp(-abs(position.y)*8.0);
+  float angle=atan(position.z,position.x);
+  float turbulence=0.76+0.24*sin(angle*13.0-cylindrical*9.0-u_time*1.25)*sin(angle*7.0+cylindrical*12.0+u_time*0.7);
+  float innerHeat=1.0-smoothstep(0.85,2.75,cylindrical);
+  vec3 diskColor=mix(vec3(0.26,0.58,1.0),vec3(0.65,0.32,1.0),1.0-smoothstep(1.25,2.4,cylindrical));
+  diskColor=mix(diskColor,vec3(1.0,0.38,0.13),innerHeat*0.92);
+  float glow=radialMask*sheet*turbulence;
+  light+=transmittance*diskColor*glow*stepSize*2.3;
+  float rim=exp(-abs(radius-0.71)*28.0);
+  light+=transmittance*vec3(1.0,0.48,0.2)*rim*stepSize*0.22;
+  transmittance*=1.0-clamp(glow*stepSize*0.17,0.0,0.08);
+  vec3 towardCenter=-position/max(radius,0.001);
+  float bend=0.085/(max(radius*radius,0.52));
+  ray=normalize(ray+towardCenter*bend*stepSize);
+  position+=ray*stepSize;
+ }
+ vec3 color=light;
+ if(hit<0.5)color+=transmittance*sky(ray);
+ float halo=exp(-abs(length(position)-0.74)*7.0);
+ color+=vec3(0.2,0.3,0.78)*halo*0.045;
+ color=1.0-exp(-color*1.28);
+ color=pow(color,vec3(0.88));
+ gl_FragColor=vec4(color,1.0);
+}`;
+function compileShader(gl,type,source){const shader=gl.createShader(type);if(!shader)throw new Error('Unable to allocate a WebGL shader.');gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(shader)||'Unknown shader compilation error.';gl.deleteShader(shader);throw new Error(message)}return shader}
+function initializeExplorer(){if(explorerState.gl)return true;try{const gl=explorerCanvas.getContext('webgl',{alpha:false,antialias:false,depth:false,stencil:false,powerPreference:'low-power'});if(!gl){showExplorerFallback('WebGL is unavailable in this browser. The 3D view cannot be rendered here; your original simulator is still available.');return false}const vertex=compileShader(gl,gl.VERTEX_SHADER,vertexShaderSource),fragment=compileShader(gl,gl.FRAGMENT_SHADER,fragmentShaderSource),program=gl.createProgram();if(!program)throw new Error('Unable to create the WebGL rendering program.');gl.attachShader(program,vertex);gl.attachShader(program,fragment);gl.linkProgram(program);gl.deleteShader(vertex);gl.deleteShader(fragment);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program)||'Unable to link the WebGL rendering program.');const buffer=gl.createBuffer();if(!buffer)throw new Error('Unable to create the WebGL scene buffer.');gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);const position=gl.getAttribLocation(program,'a_position'),locations={position,resolution:gl.getUniformLocation(program,'u_resolution'),time:gl.getUniformLocation(program,'u_time'),yaw:gl.getUniformLocation(program,'u_yaw'),pitch:gl.getUniformLocation(program,'u_pitch'),distance:gl.getUniformLocation(program,'u_distance')};if(position<0||!locations.resolution||!locations.time||!locations.yaw||!locations.pitch||!locations.distance)throw new Error('The WebGL renderer could not locate a required shader input.');explorerState.gl=gl;explorerState.program=program;explorerState.buffer=buffer;explorerState.locations=locations;explorerStatus.hidden=true;return true}catch(error){console.error('Black Hole Explorer WebGL initialization failed:',error);showExplorerFallback('The 3D renderer could not start in this browser. Return to the simulator to continue.');return false}}
+function showExplorerFallback(message){explorerStatus.textContent=message;explorerStatus.hidden=false;explorerViewport.classList.add('fallback');for(const control of [zoomInButton,zoomOutButton,resetViewButton])control.disabled=true;explorerViewport.setAttribute('aria-label',message)}
+function resizeExplorer(){if(!explorerState.gl)return;const bounds=explorerViewport.getBoundingClientRect();const ratio=Math.min(devicePixelRatio||1,innerWidth<650?1:1.35);const width=Math.max(1,Math.round(bounds.width*ratio)),height=Math.max(1,Math.round(bounds.height*ratio));if(width===explorerState.width&&height===explorerState.height)return;explorerState.width=width;explorerState.height=height;explorerState.dpr=ratio;explorerCanvas.width=width;explorerCanvas.height=height;explorerState.gl.viewport(0,0,width,height)}
+function drawExplorer(timestamp=performance.now()){if(!explorerState.open||!explorerState.gl)return;resizeExplorer();const gl=explorerState.gl,uniforms=explorerState.locations;gl.useProgram(explorerState.program);gl.bindBuffer(gl.ARRAY_BUFFER,explorerState.buffer);gl.enableVertexAttribArray(uniforms.position);gl.vertexAttribPointer(uniforms.position,2,gl.FLOAT,false,0,0);gl.uniform2f(uniforms.resolution,explorerState.width,explorerState.height);gl.uniform1f(uniforms.time,reducedMotion.matches?0:timestamp*0.001);gl.uniform1f(uniforms.yaw,explorerState.yaw);gl.uniform1f(uniforms.pitch,explorerState.pitch);gl.uniform1f(uniforms.distance,explorerState.distance);gl.drawArrays(gl.TRIANGLES,0,3);if(!reducedMotion.matches&&document.visibilityState==='visible')explorerState.raf=requestAnimationFrame(drawExplorer)}
+function renderExplorer(){cancelAnimationFrame(explorerState.raf);if(explorerState.open&&explorerState.gl){resizeExplorer();explorerState.raf=requestAnimationFrame(drawExplorer)}}
+function updateZoomLabel(){zoomValue.textContent='ZOOM · '+Math.round(7.4/explorerState.distance*100)+'%'}
+function setExplorerDistance(distance){explorerState.distance=clamp(distance,4.2,13.5);updateZoomLabel();renderExplorer()}
+function resetExplorerView(){explorerState.yaw=.42;explorerState.pitch=.28;explorerState.distance=7.4;updateZoomLabel();renderExplorer()}
+function openExplorer(){explorer.hidden=false;explorerOpen=true;explorerState.open=true;document.body.classList.add('explorer-open');stage.inert=true;document.getElementById('guide').inert=true;for(const control of [zoomInButton,zoomOutButton,resetViewButton])control.disabled=false;explorerViewport.classList.remove('fallback');if(supportsExplorerFullscreen)explorerFullscreen.hidden=false;else explorerFullscreen.hidden=true;initializeExplorer();resizeExplorer();renderExplorer();cancelAnimationFrame(raf);explorerBack.focus()}
+async function closeExplorer(){if(document.fullscreenElement===explorer){try{await document.exitFullscreen()}catch(error){console.error('Unable to exit Explorer fullscreen:',error)}}explorerState.open=false;explorerOpen=false;cancelAnimationFrame(explorerState.raf);explorer.hidden=true;stage.inert=false;document.getElementById('guide').inert=false;document.body.classList.remove('explorer-open');explorerOpenButton.focus();render()}
+async function toggleExplorerFullscreen(){if(!supportsExplorerFullscreen)return;try{if(document.fullscreenElement===explorer)await document.exitFullscreen();else await explorer.requestFullscreen();syncExplorerFullscreen()}catch(error){console.error('Unable to toggle Explorer fullscreen:',error);explorerStatus.textContent='Fullscreen is unavailable.';explorerStatus.hidden=false}}
+function syncExplorerFullscreen(){const active=document.fullscreenElement===explorer;explorerFullscreen.setAttribute('aria-pressed',String(active));explorerFullscreen.setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen');explorerFullscreen.title=active?'Exit fullscreen':'Enter fullscreen';resizeExplorer();renderExplorer()}
+function pointerGap(){const points=[...explorerState.pointers.values()];return Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y)}
+explorerOpenButton.addEventListener('click',openExplorer);explorerBack.addEventListener('click',closeExplorer);explorerFullscreen.addEventListener('click',toggleExplorerFullscreen);
+zoomInButton.addEventListener('click',()=>setExplorerDistance(explorerState.distance*0.84));zoomOutButton.addEventListener('click',()=>setExplorerDistance(explorerState.distance/0.84));resetViewButton.addEventListener('click',resetExplorerView);
+explorerViewport.addEventListener('pointerdown',event=>{if(!explorerState.gl)return;event.preventDefault();explorerViewport.setPointerCapture(event.pointerId);explorerState.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});if(explorerState.pointers.size===1){explorerState.lastPoint={x:event.clientX,y:event.clientY};explorerViewport.classList.add('dragging')}else if(explorerState.pointers.size===2){explorerViewport.classList.remove('dragging');explorerState.pinchStartDistance=pointerGap();explorerState.pinchStartCamera=explorerState.distance}});
+explorerViewport.addEventListener('pointermove',event=>{if(!explorerState.pointers.has(event.pointerId))return;explorerState.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});if(explorerState.pointers.size>=2){const gap=pointerGap();if(gap>0)setExplorerDistance(explorerState.pinchStartCamera*explorerState.pinchStartDistance/gap)}else{const dx=event.clientX-explorerState.lastPoint.x,dy=event.clientY-explorerState.lastPoint.y;explorerState.lastPoint={x:event.clientX,y:event.clientY};explorerState.yaw-=dx*0.006;explorerState.pitch=clamp(explorerState.pitch+dy*0.006,-1.32,1.32);renderExplorer()}});
+function releaseExplorerPointer(event){explorerState.pointers.delete(event.pointerId);if(explorerState.pointers.size===1){const point=[...explorerState.pointers.values()][0];explorerState.lastPoint={x:point.x,y:point.y};explorerViewport.classList.add('dragging')}else explorerViewport.classList.remove('dragging')}
+explorerViewport.addEventListener('pointerup',releaseExplorerPointer);explorerViewport.addEventListener('pointercancel',releaseExplorerPointer);explorerViewport.addEventListener('lostpointercapture',releaseExplorerPointer);
+explorerViewport.addEventListener('wheel',event=>{event.preventDefault();setExplorerDistance(explorerState.distance*Math.exp(event.deltaY*0.001))},{passive:false});
+explorerViewport.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'){event.preventDefault();explorerState.yaw-=0.12;renderExplorer()}else if(event.key==='ArrowRight'){event.preventDefault();explorerState.yaw+=0.12;renderExplorer()}else if(event.key==='ArrowUp'){event.preventDefault();explorerState.pitch=clamp(explorerState.pitch+0.1,-1.32,1.32);renderExplorer()}else if(event.key==='ArrowDown'){event.preventDefault();explorerState.pitch=clamp(explorerState.pitch-0.1,-1.32,1.32);renderExplorer()}else if(event.key==='+'||event.key==='='){event.preventDefault();setExplorerDistance(explorerState.distance*0.84)}else if(event.key==='-'){event.preventDefault();setExplorerDistance(explorerState.distance/0.84)}else if(event.key.toLowerCase()==='r'){event.preventDefault();resetExplorerView()}});
+explorerViewport.tabIndex=0;explorerFullscreen.hidden=!supportsExplorerFullscreen;
+explorerCanvas.addEventListener('webglcontextlost',event=>{event.preventDefault();cancelAnimationFrame(explorerState.raf);explorerState.gl=null;explorerState.program=null;showExplorerFallback('The WebGL context was lost. Return to the simulator, or reopen the Explorer to try again.')});
+explorerCanvas.addEventListener('webglcontextrestored',()=>{if(explorerState.open){explorerState.gl=null;explorerState.program=null;initializeExplorer();resizeExplorer();renderExplorer()}});
+if('ResizeObserver'in window){const explorerResizeObserver=new ResizeObserver(()=>{resizeExplorer();renderExplorer()});explorerResizeObserver.observe(explorerViewport)}
+document.addEventListener('fullscreenchange',syncExplorerFullscreen);
+document.addEventListener('keydown',event=>{if(!explorerOpen)return;if(event.key==='Escape'){event.preventDefault();closeExplorer();return}if(event.key==='Tab'){const focusable=[...explorer.querySelectorAll('button:not(:disabled):not([hidden]),[tabindex="0"]')].filter(element=>!element.inert);const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}}});
+function resize(){const bounds=stage.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,1.5);w=bounds.width;h=bounds.height;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.min(500,Math.max(120,Math.floor(w*h/2400)))},()=>({x:Math.random()*w,y:Math.random()*h,r:rand(.25,1.25),a:rand(.18,.8),phase:rand(0,6.28),blue:Math.random()>.72}));particles=Array.from({length:300},()=>({angle:rand(0,6.28),radius:rand(1.35,3.25),size:rand(.35,1.8),speed:rand(.4,1.3),phase:rand(0,6.28),band:Math.random()}));}
 function center(){return{x:w*(w<650?.51:.56),y:h*(w<650?.46:.49)}}
-function draw(){ctx.fillStyle='#05040a';ctx.fillRect(0,0,w,h);const c=center(),m=Number(mass.value),s=Number(spin.value)/100,R=clamp(Math.min(w,h)*(.07+m*.0028),34,118),disk=R*(2.8+s*.72),rotation=time*(.003+s*.005);
-for(const star of stars){const tw=.55+.45*Math.sin(time*.025+star.phase);ctx.fillStyle=star.blue?'rgba(170,205,255,'+(star.a*tw)+')':'rgba(239,230,255,'+(star.a*tw)+')';ctx.beginPath();ctx.arc(star.x,star.y,star.r,0,6.283);ctx.fill()}
+function draw(timestamp=performance.now()){time=timestamp/1000;ctx.fillStyle='#05040a';ctx.fillRect(0,0,w,h);const c=center(),m=Number(mass.value),s=Number(spin.value)/100,R=clamp(Math.min(w,h)*(.07+m*.0028),34,118),disk=R*(2.8+s*.72),rotation=time*(.25+s*.7);
+for(const star of stars){const tw=.62+.38*Math.sin(time*.8+star.phase);ctx.fillStyle=star.blue?'rgba(170,205,255,'+(star.a*tw)+')':'rgba(239,230,255,'+(star.a*tw)+')';ctx.beginPath();ctx.arc(star.x,star.y,star.r,0,6.283);ctx.fill()}
 let halo=ctx.createRadialGradient(c.x,c.y,R*.65,c.x,c.y,disk*2.4);halo.addColorStop(0,'#08050e');halo.addColorStop(.27,'rgba(173,88,255,.08)');halo.addColorStop(.42,'rgba(255,147,73,.13)');halo.addColorStop(.58,'rgba(92,169,255,.06)');halo.addColorStop(1,'transparent');ctx.fillStyle=halo;ctx.fillRect(c.x-disk*2.5,c.y-disk*2.5,disk*5,disk*5);
-ctx.save();ctx.translate(c.x,c.y);ctx.rotate(-.16+Math.sin(time*.002)*.015);
+ctx.save();ctx.translate(c.x,c.y);ctx.rotate(-.16+Math.sin(time*.18)*.015);
 for(let band=0;band<7;band++){const r=R*(1.25+band*.235),ry=r*(.20+band*.012);ctx.beginPath();ctx.ellipse(0,0,r,ry,0,0,Math.PI*2);const grad=ctx.createLinearGradient(-r,0,r,0);grad.addColorStop(0,'rgba(83,147,255,'+(.18+band*.025)+')');grad.addColorStop(.24,'rgba(183,120,255,'+(.36+band*.035)+')');grad.addColorStop(.53,'rgba(255,231,176,'+(.78-band*.035)+')');grad.addColorStop(.73,'rgba(255,139,66,'+(.55-band*.035)+')');grad.addColorStop(1,'rgba(106,115,255,'+(.15+band*.02)+')');ctx.strokeStyle=grad;ctx.lineWidth=R*(.035+band*.003);ctx.shadowColor=band%2?'#ff9b56':'#9c78ff';ctx.shadowBlur=13+band*2;ctx.stroke()}
 ctx.shadowBlur=0;
-for(const p of particles){const ang=p.angle+rotation*(.36+p.radius*.25),rr=R*p.radius;const x=Math.cos(ang)*rr,y=Math.sin(ang)*rr*.23;const front=Math.sin(ang)>0;ctx.globalAlpha=(front?.42:.7)*(.5+.5*Math.sin(time*.03+p.phase));ctx.fillStyle=p.band>.68?'#b9c8ff':p.band>.37?'#ffd99b':'#ff9f61';ctx.beginPath();ctx.arc(x,y,p.size*(.6+s*.6),0,6.283);ctx.fill()}ctx.globalAlpha=1;ctx.restore();
+for(const p of particles){const ang=p.angle+rotation*(p.speed+p.radius*.18),rr=R*p.radius;const x=Math.cos(ang)*rr,y=Math.sin(ang)*rr*.23;const front=Math.sin(ang)>0;ctx.globalAlpha=(front?.42:.7)*(.5+.5*Math.sin(time*1.6+p.phase));ctx.fillStyle=p.band>.68?'#b9c8ff':p.band>.37?'#ffd99b':'#ff9f61';ctx.beginPath();ctx.arc(x,y,p.size*(.6+s*.6),0,6.283);ctx.fill()}ctx.globalAlpha=1;ctx.restore();
 const lens=ctx.createRadialGradient(c.x,c.y,R*.82,c.x,c.y,R*1.2);lens.addColorStop(0,'rgba(0,0,0,0)');lens.addColorStop(.72,'rgba(196,136,255,.03)');lens.addColorStop(.9,'rgba(255,205,143,.94)');lens.addColorStop(1,'rgba(255,152,74,.08)');ctx.fillStyle=lens;ctx.beginPath();ctx.arc(c.x,c.y,R*1.2,0,6.283);ctx.fill();
 const hole=ctx.createRadialGradient(c.x-R*.2,c.y-R*.24,1,c.x,c.y,R);hole.addColorStop(0,'#000');hole.addColorStop(.72,'#010106');hole.addColorStop(.94,'#03020a');hole.addColorStop(1,'#17101f');ctx.fillStyle=hole;ctx.beginPath();ctx.arc(c.x,c.y,R,0,6.283);ctx.fill();
 // A lensed upper arc gives the disk a wraparound appearance.
 ctx.save();ctx.translate(c.x,c.y);ctx.rotate(-.16);ctx.beginPath();ctx.ellipse(0,0,R*1.28,R*.25,0,Math.PI*1.02,Math.PI*1.98);ctx.strokeStyle='rgba(255,223,172,.83)';ctx.lineWidth=Math.max(2,R*.055);ctx.shadowColor='#ffb66c';ctx.shadowBlur=18;ctx.stroke();ctx.restore();
-if(running){time++;raf=requestAnimationFrame(draw)}}
-function render(){cancelAnimationFrame(raf);draw()}
-function update(){massValue.value=mass.value+' M☉';massReadout.textContent=mass.value+' M☉';spinValue.value=spin.value+'%';render()}
+if(running&&document.visibilityState==='visible'){raf=requestAnimationFrame(draw)}}
+function render(){const bounds=stage.getBoundingClientRect();if(bounds.width!==w||bounds.height!==h||dpr!==Math.min(devicePixelRatio||1,1.5))resize();cancelAnimationFrame(raf);if(explorerOpen)return;if(running&&document.visibilityState==='visible')raf=requestAnimationFrame(draw);else draw()}
+function update(){massValue.value=mass.value+' M☉';massReadout.textContent=mass.value+' M☉';spinValue.value=spin.value+'%';mass.setAttribute('aria-valuetext',mass.value+' solar masses, visual setting');spin.setAttribute('aria-valuetext',spin.value+' percent, visual setting');render()}
+function syncPauseControl(){pause.setAttribute('aria-label',running?'Pause simulation':'Resume simulation');pause.title=running?'Pause simulation':'Resume simulation';pause.innerHTML=running?'<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zm7 0h4v14h-4z"/></svg>':'<svg viewBox="0 0 24 24"><path d="m7 4 13 8-13 8z"/></svg>'}
+function setRunning(next){running=next;status.textContent=running?'Simulation running':'Simulation paused';syncPauseControl();render()}
+async function toggleFullscreen(){try{if(document.fullscreenElement===stage)await document.exitFullscreen();else await stage.requestFullscreen();syncFullscreen()}catch(error){console.error('Unable to toggle fullscreen:',error);status.textContent='Fullscreen unavailable'}}
+function syncFullscreen(){const active=document.fullscreenElement===stage;fullscreen.setAttribute('aria-pressed',String(active));fullscreen.setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen');fullscreen.title=active?'Exit fullscreen':'Enter fullscreen';resize();render()}
 mass.addEventListener('input',update);spin.addEventListener('input',update);
-pause.addEventListener('click',()=>{running=!running;status.textContent=running?'Simulation running':'Simulation paused';pause.setAttribute('aria-label',running?'Pause simulation':'Resume simulation');pause.title=running?'Pause simulation':'Resume simulation';pause.innerHTML=running?'<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zm7 0h4v14h-4z"/></svg>':'<svg viewBox="0 0 24 24"><path d="m7 4 13 8-13 8z"/></svg>';if(running)render();else cancelAnimationFrame(raf)});
-document.getElementById('reset').addEventListener('click',()=>{mass.value='8.4';spin.value='72';running=true;status.textContent='Simulation running';pause.setAttribute('aria-label','Pause simulation');pause.title='Pause simulation';pause.innerHTML='<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zm7 0h4v14h-4z"/></svg>';update()});
+pause.addEventListener('click',()=>setRunning(!running));
+reset.addEventListener('click',()=>{mass.value='8.4';spin.value='72';setRunning(!reducedMotion.matches);update()});
+fullscreen.addEventListener('click',toggleFullscreen);
+fullscreen.hidden=!supportsFullscreen;
+document.addEventListener('fullscreenchange',syncFullscreen);
+document.addEventListener('keydown',event=>{if(explorerOpen||event.altKey||event.ctrlKey||event.metaKey||event.repeat)return;if(event.target instanceof Element&&event.target.closest('input,button,a,textarea,select,[contenteditable="true"]'))return;const key=event.key.toLowerCase();if(event.code==='Space'){event.preventDefault();pause.click()}else if(key==='r'){event.preventDefault();reset.click()}else if(key==='f'&&supportsFullscreen){event.preventDefault();fullscreen.click()}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')cancelAnimationFrame(raf);else render()});
+reducedMotion.addEventListener('change',event=>{if(event.matches)setRunning(false)});
+if('ResizeObserver'in window){const stageResizeObserver=new ResizeObserver(()=>{resize();render()});stageResizeObserver.observe(stage)}
 addEventListener('resize',()=>{resize();render()},{passive:true});
-resize();if(reduced)running=false;update();
+resize();status.textContent=running?'Simulation running':'Simulation paused';syncPauseControl();update();
 })();
 </script>
 </body>
